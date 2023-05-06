@@ -7,10 +7,14 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer);
 
-io.on("connect", (socket) => {
-  console.log("user connected", socket.id);
-});
+async function main() {
+  io.on("connect", (socket) => {
+    console.log("user connected", socket.id);
+  });
 
-app.use(express.static("public"));
+  app.use(express.static("public"));
 
-httpServer.listen(3000);
+  httpServer.listen(3000);
+}
+
+main();
