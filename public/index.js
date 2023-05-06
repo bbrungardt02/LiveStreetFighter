@@ -105,7 +105,7 @@ class Fighter extends Sprite {
     this.health = 100;
     this.framesCurrent = 0;
     this.framesElapsed = 0;
-    this.framesHold = 7;
+    this.framesHold = 5;
     this.sprites = sprites;
     this.dead = false;
 
@@ -386,6 +386,8 @@ const keys = {
   },
 };
 
+socket.emit("keys", keys);
+
 function rectangularCollision({ rectangle1, rectangle2 }) {
   return (
     rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
@@ -531,12 +533,10 @@ window.addEventListener("keydown", (event) => {
       case "d":
         keys.d.pressed = true;
         player.lastKey = "d";
-        socket.emit("keyPress", { player: "player1", key: "d" }); // Emitting the "d" key for player1
         break;
       case "a":
         keys.a.pressed = true;
         player.lastKey = "a";
-        socket.emit("keyPress", { player: "player1", key: "a" }); // Emitting the "a" key for player1
         break;
       case "w":
         player.velocity.y = -20;
@@ -552,12 +552,10 @@ window.addEventListener("keydown", (event) => {
       case "ArrowRight":
         keys.ArrowRight.pressed = true;
         enemy.lastKey = "ArrowRight";
-        socket.emit("keyPress", { player: "player2", key: "ArrowRight" }); // Emitting the "ArrowRight" key for player2
         break;
       case "ArrowLeft":
         keys.ArrowLeft.pressed = true;
         enemy.lastKey = "ArrowLeft";
-        socket.emit("keyPress", { player: "player2", key: "ArrowLeft" }); // Emitting the "ArrowLeft" key for player2
         break;
       case "ArrowUp":
         enemy.velocity.y = -20;
