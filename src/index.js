@@ -4,37 +4,9 @@ const { Server } = require("socket.io");
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer);
-const { player, enemy } = require("../public/index");
 
-function determineWinner({ player, enemy }) {
-  if (player.health === enemy.health) {
-    io.emit("winner", "Tie");
-  } else if (player.health > enemy.health) {
-    io.emit("winner", "Player 1 Wins!");
-  } else if (enemy.health > player.health) {
-    io.emit("winner", "Player 2 Wins!");
-  }
-}
-
-let timer = 60; // Initial timer value
-let timerId; // Timer ID
-
-// Function to decrease the timer
-function decreaseTimer() {
-  if (timer > 0) {
-    timer--;
-    io.emit("timerUpdate", timer); // Emit the updated timer value to all connected clients
-  }
-  if (timer === 0) {
-    clearTimeout(timerId);
-    determineWinner({ player, enemy });
-  }
-}
-
-// Function to start the timer
-function startTimer() {
-  timerId = setInterval(decreaseTimer, 1000);
-}
+let timer = 60;
+let timerId;
 
 async function main() {
   io.on("connect", (socket) => {
@@ -55,9 +27,6 @@ async function main() {
       io.emit("keyup", event); // Emit the keyup event to all connected clients
     });
 
-    // Start the timer when a client connects
-    startTimer();
-
     // Handle disconnect event
     socket.on("disconnect", () => {
       console.log("A user disconnected");
@@ -66,6 +35,21 @@ async function main() {
   app.use(express.static("public"));
 
   httpServer.listen(3000);
+
+  // Timer function
+  function decreaseTimer() {
+    timerId = setTimeout(decreaseTimer, 1000);
+    if (timer > 0) {
+      timer--;
+      io.emit("timer", timer); // Emit the updated timer value to all connected clients
+    }
+    if (timer === 0) {
+      clearTimeout(timerId);
+      io.emit("timerEnd"); // Emit the timer end event to all connected clients
+    }
+  }
+
+  decreaseTimer();
 }
 
 main();

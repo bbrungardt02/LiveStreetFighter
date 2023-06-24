@@ -419,6 +419,19 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 
 // decreaseTimer();
 
+// Listen for timer event
+socket.on("timer", (timer) => {
+  // Update the timer display on the client side
+  document.querySelector("#timer").innerHTML = timer;
+});
+
+// Listen for timer end event
+socket.on("timerEnd", () => {
+  // Perform actions when the timer ends
+  console.log("Timer ended");
+  // Add your code here to handle the timer end event
+});
+
 function animate() {
   window.requestAnimationFrame(animate);
   c.fillStyle = "black";
@@ -548,5 +561,3 @@ socket.on("keyup", (key) => {
       break;
   }
 });
-
-module.exports = { player, enemy };
