@@ -117,16 +117,19 @@
       </div>
       <canvas id="canvas"></canvas>
     </div>
-
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"
-      integrity="sha512-H6cPm97FAsgIKmlBA4s774vqoN24V5gSQL4yBTDOY2su2DeXZVhQPxFK4P6GPdnZqM9fg1G3cMv5wD7e6cFLZQ=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    ></script>
     <script src="/socket.io/socket.io.js"></script>
-    <!-- <script src="js/utils.js"></script> -->
-    <!-- <script src="js/classes.js"></script> -->
+    <script>
+      const socket = io();
+
+      // Add event listeners for keydown and keyup events
+      window.addEventListener("keydown", (event) => {
+        socket.emit("keydown", event.key); // Emit the keydown event to the server
+      });
+
+      window.addEventListener("keyup", (event) => {
+        socket.emit("keyup", event.key); // Emit the keyup event to the server
+      });
+    </script>
     <script type="module" src="index.js"></script>
   </body>
 </html>

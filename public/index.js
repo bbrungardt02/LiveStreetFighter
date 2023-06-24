@@ -4,12 +4,6 @@ const c = canvas.getContext("2d");
 canvas.width = 1024;
 canvas.height = 576;
 
-const socket = io("ws://localhost:3000");
-
-socket.on("connect", () => {
-  console.log("connected");
-});
-
 c.fillRect(0, 0, canvas.width, canvas.height);
 
 const gravity = 0.7;
@@ -386,8 +380,6 @@ const keys = {
   },
 };
 
-socket.emit("keys", keys);
-
 function rectangularCollision({ rectangle1, rectangle2 }) {
   return (
     rectangle1.attackBox.position.x + rectangle1.attackBox.width >=
@@ -400,32 +392,32 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
   );
 }
 
-function determineWinner({ player, enemy, timerId }) {
-  clearTimeout(timerId);
-  document.querySelector("#displayText").style.display = "flex";
-  if (player.health === enemy.health) {
-    document.querySelector("#displayText").innerHTML = "Tie";
-  } else if (player.health > enemy.health) {
-    document.querySelector("#displayText").innerHTML = "Player 1 Wins!";
-  } else if (enemy.health > player.health) {
-    document.querySelector("#displayText").innerHTML = "Player 2 Wins!";
-  }
-}
+// function determineWinner({ player, enemy, timerId }) {
+//   clearTimeout(timerId);
+//   document.querySelector("#displayText").style.display = "flex";
+//   if (player.health === enemy.health) {
+//     document.querySelector("#displayText").innerHTML = "Tie";
+//   } else if (player.health > enemy.health) {
+//     document.querySelector("#displayText").innerHTML = "Player 1 Wins!";
+//   } else if (enemy.health > player.health) {
+//     document.querySelector("#displayText").innerHTML = "Player 2 Wins!";
+//   }
+// }
 
-let timer = 60;
-let timerId;
-function decreaseTimer() {
-  timerId = setTimeout(decreaseTimer, 1000);
-  if (timer > 0) {
-    timer--;
-    document.querySelector("#timer").innerHTML = timer;
-  }
-  if (timer === 0) {
-    determineWinner({ player, enemy });
-  }
-}
+// let timer = 60;
+// let timerId;
+// function decreaseTimer() {
+//   timerId = setTimeout(decreaseTimer, 1000);
+//   if (timer > 0) {
+//     timer--;
+//     document.querySelector("#timer").innerHTML = timer;
+//   }
+//   if (timer === 0) {
+//     determineWinner({ player, enemy });
+//   }
+// }
 
-decreaseTimer();
+// decreaseTimer();
 
 function animate() {
   window.requestAnimationFrame(animate);
@@ -527,61 +519,34 @@ function animate() {
 
 animate();
 
-window.addEventListener("keydown", (event) => {
-  if (!player.dead) {
-    switch (event.key) {
-      case "d":
-        keys.d.pressed = true;
-        player.lastKey = "d";
-        break;
-      case "a":
-        keys.a.pressed = true;
-        player.lastKey = "a";
-        break;
-      case "w":
-        player.velocity.y = -20;
-        break;
-      case " ":
-        player.attack();
-        break;
-    }
-  }
-  if (!enemy.dead) {
-    switch (event.key) {
-      // enemy keys
-      case "ArrowRight":
-        keys.ArrowRight.pressed = true;
-        enemy.lastKey = "ArrowRight";
-        break;
-      case "ArrowLeft":
-        keys.ArrowLeft.pressed = true;
-        enemy.lastKey = "ArrowLeft";
-        break;
-      case "ArrowUp":
-        enemy.velocity.y = -20;
-        break;
-      case "ArrowDown":
-        enemy.attack();
-        break;
-    }
+socket.on("keydown", (key) => {
+  switch (key) {
+    case "d":
+      keys.d.pressed = true;
+      player.lastKey = "d";
+      break;
+    case "a":
+      keys.a.pressed = true;
+      player.lastKey = "a";
+      break;
+    case "w":
+      player.velocity.y = -20;
+      break;
+    case " ":
+      player.attack();
+      break;
   }
 });
 
-window.addEventListener("keyup", (event) => {
-  switch (event.key) {
+socket.on("keyup", (key) => {
+  switch (key) {
     case "d":
       keys.d.pressed = false;
       break;
     case "a":
       keys.a.pressed = false;
       break;
-
-    // enemy keys
-    case "ArrowRight":
-      keys.ArrowRight.pressed = false;
-      break;
-    case "ArrowLeft":
-      keys.ArrowLeft.pressed = false;
-      break;
   }
 });
+
+module.exports = { player, enemy };
