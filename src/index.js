@@ -19,11 +19,13 @@ async function main() {
 
     // Handle keydown event
     socket.on("keydown", (event) => {
+      console.log("Keydown:", event);
       io.emit("keydown", event); // Emit the keydown event to all connected clients
     });
 
     // Handle keyup event
     socket.on("keyup", (event) => {
+      console.log("Keyup:", event);
       io.emit("keyup", event); // Emit the keyup event to all connected clients
     });
 

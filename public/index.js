@@ -404,21 +404,6 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 //   }
 // }
 
-// let timer = 60;
-// let timerId;
-// function decreaseTimer() {
-//   timerId = setTimeout(decreaseTimer, 1000);
-//   if (timer > 0) {
-//     timer--;
-//     document.querySelector("#timer").innerHTML = timer;
-//   }
-//   if (timer === 0) {
-//     determineWinner({ player, enemy });
-//   }
-// }
-
-// decreaseTimer();
-
 // Listen for timer event
 socket.on("timer", (timer) => {
   // Update the timer display on the client side
